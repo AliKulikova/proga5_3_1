@@ -6,22 +6,27 @@
 #include <string>
 using namespace std;
 
-mutex block;
+mutex mtx;
+
 ifstream in("input.txt");               //открываем файл для чтения
 ofstream out("output.txt");             //открываем файл для записи
 
 void read(vector <string> &v){
     string words;
-    block.lock();                       //блокируем всё остальное, пока не выполним следующие две строчки
+    unique_lock<mutex> block(mtx);                       //блокируем всё остальное, пока не выполним следующие две строчки
     in >> words;
     v.push_back(words);
     block.unlock();     //разблокируем
 }
 
 void number(vector <string>& p, string word, int& sum, int a, int b){            //счетчик
+
     for (int i = a; i < b; i++)
-        if (p[i] == word)
+        if (p[i] == word) {
+            unique_lock<mutex> block(mtx);
             sum++;
+            block.unlock();
+        }
 }
 
 int main(){

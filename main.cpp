@@ -16,16 +16,13 @@ void read(vector <string> &v){
     unique_lock<mutex> block(mtx);                       //блокируем всё остальное, пока не выполним следующие две строчки
     in >> words;
     v.push_back(words);
-    block.unlock();     //разблокируем
 }
 
 void number(vector <string>& p, string word, int& sum, int a, int b){            //счетчик
-
+    unique_lock<mutex> block(mtx);
     for (int i = a; i < b; i++)
         if (p[i] == word) {
-            unique_lock<mutex> block(mtx);
             sum++;
-            block.unlock();
         }
 }
 
